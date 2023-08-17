@@ -23,10 +23,6 @@ let language={
                 }
             }
         },
-        cancel:{
-            "Arabic":"الغاء",
-            "English":"cancel"
-        },
         direction:{
             "Arabic":"عربي", 
             "English":"English"
@@ -37,10 +33,6 @@ let language={
         }
     },
     task:{
-        check:{
-            "Arabic":"تم",
-            "English":"Done"
-        },
         taskName:{
             taskPlaceHolder:{
                 "Arabic":"اسم المهمة",
@@ -91,12 +83,14 @@ let tasksElement = {
         {
             let check = document.createElement("div");
             check.className = "check";
-            check.setAttribute("check-content",language.task.check[languageelement.textContent]);
+            // check.setAttribute("check-content",`\f00c`);
             check.onclick = function() {
                 check.classList.toggle("checked");
                 if (check.classList.contains("checked")) {
+                    check.innerHTML=`<i class="fa-solid fa-check"></i>`;
                     check.nextElementSibling.style.backgroundColor = "#ecfb54";
                 } else {
+                    if(check.innerHTML!=="")check.innerHTML="";
                     check.nextElementSibling.removeAttribute("style");
                 }
             }
@@ -160,11 +154,11 @@ let tasksElement = {
             task.appendChild(details);
             details.className = "details";
             details.classList.add(directionLtrRtl);
-            details.innerHTML = `+`;
+            details.innerHTML = `<i class="fa-solid fa-angle-down"></i>`;
             details.addEventListener("click",function() {
                 details.classList.toggle("clicked");
                 if (!task.classList.contains("expanded-task")) {
-                    details.innerHTML = `-`;
+                    details.innerHTML = `<i class="fa-solid fa-angle-up"></i>`;
                     move.style.top = "53%";
                     move.style.transition = "0.3s";
                     task.classList.add("expanded-task");
@@ -198,7 +192,7 @@ let tasksElement = {
                     if (!cleared) {
                         clearInterval(handeler);
                     }
-                    details.innerHTML = `+`;
+                    details.innerHTML = `<i class="fa-solid fa-angle-down"></i>`;
                     move.style.top = "30%";
                     task.classList.remove("expanded-task");
                     task.style.height = "60px";
@@ -218,6 +212,7 @@ let tasksElement = {
             expandedContent.style.opacity = "0";
             expandedContent.className = "expanded-content";
             let text  = document.createElement("a");
+            // text.innerHTML=`<i class="fa-regular fa-pen-to-square"></i>`;
             let audio = document.createElement("a");
             let vedio = document.createElement("a");
             function createExtentions(){
@@ -227,23 +222,41 @@ let tasksElement = {
                 expandedContent.appendChild(extentions);
                 function createText(){
                     text.className = "text";
+                    let iEle=document.createElement("i");
+                    iEle.className="fa-regular fa-clipboard";
+                    iEle.addEventListener("click",()=>{
+                        addActiveClass(text);
+                    })
+                    text.appendChild(iEle);
                     text.classList.add("active");
-                    text.addEventListener("click",(e)=>{
-                        addActiveClass(e.target);
+                    text.addEventListener("click",()=>{
+                        addActiveClass(text);
                     })
                     extentions.appendChild(text);
                 }
                 function createAudio(){
                     audio.className = "audio";
-                    audio.addEventListener("click",(e)=>{
-                        addActiveClass(e.target);
+                    let iEle=document.createElement("i");
+                    iEle.className="fa-solid fa-circle-play";
+                    iEle.addEventListener("click",()=>{
+                        addActiveClass(audio);
+                    })
+                    audio.appendChild(iEle);
+                    audio.addEventListener("click",()=>{
+                        addActiveClass(audio);
                     })
                     extentions.appendChild(audio);
                 }
                 function createVedio(){
                     vedio.className = "vedio";
+                    let iEle=document.createElement("i");
+                    iEle.className="fa-solid fa-file";
+                    iEle.addEventListener("click",()=>{
+                        addActiveClass(vedio);
+                    })
+                    vedio.appendChild(iEle);
                     vedio.addEventListener("click",(e)=>{
-                        addActiveClass(e.target);
+                        addActiveClass(vedio);
                     })
                     extentions.appendChild(vedio);
                 }
@@ -405,10 +418,6 @@ function headerInput()
             if(directionLtrRtl==="ltr")LtrRtl.innerHTML="English";
             else LtrRtl.innerHTML="Arabic";
             localStorage.setItem("LtrRtl",LtrRtl.innerHTML);
-            let checkElement=document.querySelectorAll(".task .check");
-            checkElement.forEach((e)=>{
-                e.setAttribute("check-content",language.task.check[LtrRtl.innerHTML]);
-            })
             let projectName=document.querySelector(".tasks .header .bar .name");
             projectName.innerHTML=language.header.bar.barName[LtrRtl.innerHTML];
             let headerButtn=document.querySelector(".tasks .header .butn");
@@ -420,10 +429,7 @@ function headerInput()
             if(name)name.setAttribute("placeholder",language.task.taskName.taskPlaceHolder[LtrRtl.innerHTML]);
             letcontent=document.querySelector(".tasks .header .task .screen textarea");
             if(content)content.setAttribute("placeholder",language.task.content.placeHolder[LtrRtl.innerHTML]);
-            let cancel=document.querySelector(".tasks .header .cancel");
-            if(cancel) {
-                cancel.innerHTML=language.header.cancel[LtrRtl.innerHTML];
-            }
+            
             let deleteAll=document.querySelector(".tasks .header .clear-all");
             if(deleteAll) deleteAll.innerHTML=language.header.deleteAll[LtrRtl.innerHTML];
             let popup=document.querySelector(".PopUp-message");

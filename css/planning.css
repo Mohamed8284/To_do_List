@@ -11,6 +11,7 @@
     --color8:#b8e387;
     --color9:#ecfb54;
     --color10:#00968826;
+    --color11:#85aea5;
     --bin-color:#e8e0bc;
     --black:#354c56;
     --main-transition:0.3s;
@@ -23,6 +24,8 @@
     padding-bottom: 25px;
     overflow-y:auto ;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 .tasks .content{
     display: flex;
@@ -54,8 +57,7 @@
     transform: translateX(-50%);
 }
 .tasks .header .cancel.expanded{
-    width: 50px;
-    height: 5px;
+    width: 20px;
     background-color: var(--color9);
     position: absolute;
     top: 95px;
@@ -64,11 +66,12 @@
     user-select: none;
     cursor: pointer;
     transition-duration: var(--main-transition);
-    transition-property: opacity ;
-    transition-property: color ;
+    transition-property: color;
     color: transparent;
-    padding: 2px 4px;
     z-index: 2;
+    display: flex;
+    align-items: center;
+    padding: 0px 7px;
 }
 .tasks .header .cancel.expanded.ltr{
     left: 75px;
@@ -80,13 +83,17 @@
     display: none;
 }
 .tasks .header:hover .cancel.expanded{
-    opacity: 1;
+    opacity: 0.5;
     height: 20px;
     border-radius: 13px;
     content: "cancel";
     display: flex;
     justify-content: center;
     color: black;
+    transition-property: opacity;
+}
+.tasks .header:hover .cancel.expanded:hover{
+    opacity: 1;
 }
 .header .language{
     display: block;
@@ -177,6 +184,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 20px;
+    color: var(--black);
 }
 .task .check.checked::after{
     content: attr(check-content);
@@ -269,14 +278,20 @@
 .task .details{
     cursor: pointer;
     width: 22px;
-    font-size: 30px;
+    font-size: 20px;
+    height: 34px;
     color: #777;
     user-select: none;
-    display: flex;
     justify-content: center;
     padding: 0px 6px;
-    border-radius: 10px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    text-align: center;
     transition: var(--main-transition);
+}
+.task .details i{
+    transform: translateY(5%);
 }
 .task .details.rtl{
     margin-right: 15px;
@@ -287,9 +302,7 @@
 .task .details:hover{
     background-color: #ecfb54;
 }
-.task:not(.expanded-task) .details:hover{
-    transform: rotate(90deg);
-}
+
 .task .expanded-content{
     background-color: var(--color4);
     width: 420px;
@@ -304,7 +317,7 @@
 }
 .task .expanded-content .extentions{
     position: absolute;
-    left: 12px;
+    left: 10.5px;
     top: 10px;
     width: 40px;
     height: 130px;
@@ -316,7 +329,20 @@
     height: 30%;
     background-color: #abe3cd;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+.task .expanded-content .extentions a i{
+    font-size: 24px;
+    transition: var(--main-transition);
+    color: var(--color11);
+}
+.task .expanded-content .extentions a.active i{
+    color: var(--black);
+
+}
+
 .task .expanded-content .extentions a.vedio{
     
     top: calc(70%);
@@ -333,14 +359,26 @@
 .task .expanded-content .extentions a.vedio:hover,
 .task .expanded-content .extentions a.active
 {
+    
     background-color: #66c5c382;
     transition: var(--main-transition);
 }
+.task .expanded-content .extentions a.active{
+    animation: shadow-move 2s  linear infinite alternate-reverse ;
+}
+@keyframes shadow-move {
+    0%{
+        box-shadow: -3px 0px 5px 1px #a3ebd8;
+    }
+    100%{
+        box-shadow: 3px 0px 5px 1px #a3ebd8;
+    }
+}
 .task .expanded-content .screen{
     position: absolute;
-    right: 12px;
+    right: 10px;
     top: 10px;
-    width: 347px;
+    width: 349px;
     height: 130px;
     background-color: var(--color1);
     border-radius: 10px;
@@ -423,16 +461,3 @@ border-radius: 5px;
     cursor: pointer;
     user-select: none;
 }
-  /* 
-  if (!task.classList.contains("expanded-task")) {
-                    details.innerHTML = `-`;
-                    move.style.top = "53%";
-                    move.style.transition = "0.3s";
-                    task.classList.add("expanded-task");
-                    expandedContent.style.opacity = "1";
-  */
-/* .task:not(.expanded-task){
-    height: 230px;
-    transition: 0.3s;
-    align-items: flex-start;
-} */
