@@ -364,7 +364,7 @@
     transition: var(--main-transition);
 }
 .task .expanded-content .extentions a.active{
-    animation: shadow-move 2s  linear infinite alternate-reverse ;
+    /*animation: shadow-move 2s  linear infinite alternate-reverse ;*/
 }
 @keyframes shadow-move {
     0%{
