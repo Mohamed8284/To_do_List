@@ -2,6 +2,9 @@ function returnDate() {
     let taskDate=new Date();
     return `${taskDate.getFullYear()}/${taskDate.getMonth()+1}/${taskDate.getDate()}`;
 }
+if(!localStorage.getItem("taskCount")){
+    localStorage.setItem("taskCount","0");
+}
 let directionLtrRtl="ltr";
 let LtrRtl=document.querySelector(".header .language");
 let languageelement=document.querySelector(".header .language");
@@ -27,10 +30,17 @@ let language={
             "Arabic":"عربي", 
             "English":"English"
         },
-        deleteAll:{
-            "Arabic":"حذف الكل", 
-            "English":"Delete All"
+        deleteTask:{
+            delete:{
+                "Arabic":"حذف", 
+                "English":"Delete"
+            },
+            select:{
+                "Arabic":"تحديد", 
+                "English":"Select"
+            }
         }
+        // deleteTask.innerHTML=language.header.deleteTask[LtrRtl.innerHTML]
     },
     task:{
         taskName:{
@@ -56,11 +66,13 @@ let language={
     }
 };
 let tasksElement = {
-    createTask(taskName,taskContent,taskDate,taskKind="output")
+    createTask(taskName,taskContent,taskDate,taskKind="output",iD)
     {
+        
         let handeler;
         // console.log(taskContent);
         let task = document.createElement("div");
+        task.id=iD;
         task.className = "task";
         let tasks;
         if(taskKind==="output")
@@ -84,10 +96,11 @@ let tasksElement = {
             let check = document.createElement("div");
             check.className = "check";
             // check.setAttribute("check-content",`\f00c`);
+            check.setAttribute("i-inside","fa-solid fa-check");
             check.onclick = function() {
                 check.classList.toggle("checked");
                 if (check.classList.contains("checked")) {
-                    check.innerHTML=`<i class="fa-solid fa-check"></i>`;
+                    check.innerHTML=`<i class="${check.getAttribute("i-inside")}"></i>`;
                     check.nextElementSibling.style.backgroundColor = "#ecfb54";
                 } else {
                     if(check.innerHTML!=="")check.innerHTML="";
@@ -321,11 +334,14 @@ let tasksElement = {
 };
 function importFromLocalStorage()
 {
+    function containtask(key){
+        return key[0]==="T"&&key[1]==="A"&&key[2]==="S"&&key[3]==="K";
+    }
     if(window.localStorage.length)
     {
         for(let [key,value] of Object.entries(localStorage))
         {
-            if(key!=="LtrRtl")tasksElement.createTask(value.split(",")[0],value.split(",")[1],value.split(",")[2]);
+            if(containtask(key))tasksElement.createTask(value.split(",")[0],value.split(",")[1],value.split(",")[2],"output",key.slice(4));
         }
     }
     if(localStorage.getItem("LtrRtl")==="Arabic")LtrRtl.click();
@@ -346,15 +362,14 @@ function headerInput()
                 taskData[0]=nameValue;
                 taskData[1]=contentValue;
                 taskData[2]=dateValue;
-                // console.log(taskData[1]);
-                localStorage.setItem(localStorage.length,taskData);
-                tasksElement.createTask(nameValue,contentValue,dateValue)
+                localStorage.setItem(`TASK${localStorage.getItem("taskCount")}`,taskData);
+                tasksElement.createTask(nameValue,contentValue,dateValue,"output",localStorage.getItem("taskCount"));
             }
             if(butn.innerHTML==language.header.bar.barButtn.new[LtrRtl.innerHTML]){
                 butn.innerHTML=language.header.bar.barButtn.add[LtrRtl.innerHTML];
                 header.classList.add("expanded");
                 header.nextElementSibling.classList.add("translate");
-                tasksElement.createTask("","",returnDate(),"input");
+                tasksElement.createTask("","",returnDate(),"input",localStorage.getItem("taskCount"));
                 thisTask=document.querySelector(".tasks .header .task");
                 let thisTaskMove=document.querySelector(".tasks .header .task .move");
                 thisTaskMove.remove();
@@ -375,6 +390,7 @@ function headerInput()
                     header.nextElementSibling.classList.remove("translate");
                     butn.innerHTML=language.header.bar.barButtn.new[LtrRtl.innerHTML];
                     exprotToLocalStorage(name.value,content.value,returnDate());
+                    localStorage.setItem("taskCount",+localStorage.getItem("taskCount")+1);
                     thisTask.remove(); 
                     cancel.classList.remove("expanded");
                 }
@@ -429,9 +445,11 @@ function headerInput()
             if(name)name.setAttribute("placeholder",language.task.taskName.taskPlaceHolder[LtrRtl.innerHTML]);
             letcontent=document.querySelector(".tasks .header .task .screen textarea");
             if(content)content.setAttribute("placeholder",language.task.content.placeHolder[LtrRtl.innerHTML]);
-            
-            let deleteAll=document.querySelector(".tasks .header .clear-all");
-            if(deleteAll) deleteAll.innerHTML=language.header.deleteAll[LtrRtl.innerHTML];
+            let deleteTask=document.querySelector(".tasks .header .delete");
+            if(deleteTask) {
+                if(deleteTask.innerHTML===language.header.deleteTask.delete[LtrRtl.innerHTML])
+                deleteTask.innerHTML=language.header.deleteTask.delete[LtrRtl.innerHTML];
+            }
             let popup=document.querySelector(".PopUp-message");
         }
         function showPopUp(){
@@ -454,29 +472,59 @@ function headerInput()
             document.body.appendChild(message);
         }
         showPopUp();
-        let clearAllTasks=document.querySelector(".header .clear-all");
+        let deleteTask=document.querySelector(".header .delete");
         let message=document.querySelector(".PopUp-message");
-        clearAllTasks.onclick=function(){
-            // if(){
-                message.style.setProperty("opacity","1");
-                message.style.zIndex="1";
-            // }
-            clearAllTasks.innerHTML="Select";
+        deleteTask.onclick=function(){
+            let checkElements=document.querySelectorAll(".task .check");
+            let checkedElements=document.querySelectorAll(".task .check.checked");
+            if(deleteTask.innerHTML==="Delete"){
+                checkElements.forEach((e)=>{
+                    if(e) {
+                        e.setAttribute("i-inside","fa-solid fa-trash-can");
+                        if(e.classList.contains("checked")){
+                            e.firstChild.className=e.getAttribute("i-inside");
+                        }
+                    }
+                })
+                deleteTask.innerHTML="Select";
+            }
+            else if(deleteTask.innerHTML==="Select"){
+                if (checkedElements.length>0){
+                    message.style.opacity="1";
+                    message.style.zIndex="1";
+                }
+                deleteTask.innerHTML="Delete";
+            }
         }
         let yes=document.querySelector(".PopUp-message .yes");
         yes.addEventListener("click",()=>{
-            localStorage.clear();
-            let allTasks=document.querySelectorAll(".content .task");
-            allTasks.forEach((t)=>{
-                t.remove();
+            let checkedElements=document.querySelectorAll(".task .check.checked");
+            let checkElements=document.querySelectorAll(".task .check");
+            checkedElements.forEach((e)=>{
+                localStorage.removeItem(`TASK${e.parentElement.id}`);
+                e.parentElement.remove();
             })
+            
             message.style.setProperty("opacity","0");
             message.style.zIndex="-1";
+            
+            deleteTask.innerHTML="Delete";
+            checkElements.forEach((e)=>{
+                e.setAttribute("i-inside","fa-solid fa-check");
+            })
         })
         let no=document.querySelector(".PopUp-message .no");
         no.addEventListener("click",()=>{
+            let checkElements=document.querySelectorAll(".task .check");
             message.style.setProperty("opacity","0");
             message.style.zIndex="-1";
+            checkElements.forEach((e)=>{
+                e.setAttribute("i-inside","fa-solid fa-check");
+                if(e.classList.contains("checked"))
+                {
+                    e.firstChild.className=e.getAttribute("i-inside");
+                }
+            })
         })
     }
     window.addEventListener("keydown",(e)=>{
@@ -491,4 +539,3 @@ function headerInput()
     })
 headerInput();
 importFromLocalStorage();
-

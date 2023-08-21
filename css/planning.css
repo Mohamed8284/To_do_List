@@ -58,7 +58,6 @@
 }
 .tasks .header .cancel.expanded{
     width: 20px;
-    background-color: var(--color9);
     position: absolute;
     top: 95px;
     font-size: 15px;
@@ -83,7 +82,7 @@
     display: none;
 }
 .tasks .header:hover .cancel.expanded{
-    opacity: 0.5;
+    opacity: 0.4;
     height: 20px;
     border-radius: 13px;
     content: "cancel";
@@ -91,45 +90,41 @@
     justify-content: center;
     color: black;
     transition-property: opacity;
+    background-color: var(--color1);
 }
 .tasks .header:hover .cancel.expanded:hover{
-    opacity: 1;
+    opacity: 1;    
+    box-shadow: 1px 1px 20px 1px var(--black);
+}
+.header .language,
+.header .delete{
+
+    display: block;
+    height: 15px;
+    padding: 7px 8px;
+    line-height: 15px;
+    font-size: 15px;
+    border-radius: 10px;
+    text-align: center;
+    background-color: #ecfb5485;
+    cursor: pointer;
+    user-select: none;
+    position: absolute;
+    bottom: 5px;
+    z-index: 2;
+    transition: var(--main-transition);
+    width: 50px;
 }
 .header .language{
-    display: block;
-    width: 50px;
-    height: 15px;
-    padding: 7px 8px;
-    line-height: 15px;
-    font-size: 15px;
-    border-radius: 10px;
-    text-align: center;
-    background-color: var(--color9);
-    cursor: pointer;
-    user-select: none;
-    position: absolute;
     right: 42px;
-    bottom: 5px;
-    z-index: 2;
 }
-.header .clear-all{
-    display: block;
-    width: 65px;
-    height: 15px;
-    padding: 7px 8px;
-    line-height: 15px;
-    font-size: 15px;
-    border-radius: 10px;
-    text-align: center;
-    background-color: var(--color9);
-    cursor: pointer;
-    user-select: none;
-    position: absolute;
+.header .delete{
     right: 125px;
-    bottom: 5px;
-    z-index: 2;
 }
-
+.header .delete:hover,
+.header .language:hover{
+    background-color: var(--color9);
+}
 .tasks .header.expanded {
 
     padding-bottom: 40px;
@@ -163,7 +158,7 @@
     border-radius: 10px;
 }
 .tasks .header.expanded .task{
-    margin: 25px auto 0;
+    margin: 25px auto 10px;
 }
 .task{
     display: flex;
@@ -187,10 +182,7 @@
     font-size: 20px;
     color: var(--black);
 }
-.task .check.checked::after{
-    content: attr(check-content);
-    font-weight: bold;
-}
+
 .task .check.delete{
     background-color: var(--bin-color) !important;
 }
